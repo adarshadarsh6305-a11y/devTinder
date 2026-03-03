@@ -1,24 +1,14 @@
 const express=require("express");
 const app=express();
 
-const {adminAuth,userAuth}=require("./middleware/auth");
+app.get("/user",(req,res)=>{
 
-app.use("/admin",adminAuth);
+   throw new error;
+});
+app.use("/",(err,req,res,next)=>{
+    res.status(404).send("something went wrong");
+})
 
-app.get("/user/login",(re,res)=>{
-    res.send("logged successfully!");
-});
-
-app.get("/user/data",userAuth,(re,res,next)=>{
-    res.send("user information");
-});
-
-app.get("/admin/getalldata",(req,res,next)=>{
-    res.send("all data fetched");
-});
-app.get("/admin/delete",(re,res,next)=>{
-    res.send("deleted user");
-});
 
 
 app.listen(535,()=>{
