@@ -4,17 +4,6 @@ const connectDB=require("./config/database");
 const User=require("./models/user");
 
 app.use(express.json());
-app.post("/signup", async(req,res)=>{
-    const user=new User(req.body);
-    try{
-      await user.save();
-      res.send("user added successfully!");
-    }
-    catch(err){
-      res.status(400).send("error occured while saving"+err.message);
-    }
-});
-
 app.get("/user", async(req,res)=>{
    const userEmail=req.body.emailId;
     try{
@@ -31,6 +20,44 @@ app.get("/user", async(req,res)=>{
     }
 });
 
+app.post("/signup", async(req,res)=>{
+    const user=new User(req.body);
+    try{
+      await user.save();
+      res.send("user added successfully!");
+    }
+    catch(err){
+      res.status(400).send("error occured while saving"+err.message);
+    }
+});
+
+app.delete("/user",async(req,res)=>{
+  const userId=req.body.userId;
+
+  try{
+  await User.findByIdAndDelete(userId);
+  res.send("user deleted successfully");
+  }
+  catch(err){
+    res.status(404).send("something went wrong");
+  }
+
+})
+
+app.patch("/user",async(req,res)=>{
+  const userId=req.body.userId;
+  const data = req.body;
+  try{
+  const user=await User.findByIdAndUpdate({_id:userId},data,{returnDocument:"after"});
+  console.log(user);
+  res.send("user updated successfully");
+  }
+  catch(err){
+    res.status(404).send("something went wrong");
+  }
+
+})
+
 connectDB()
 .then(()=>{
   console.log("database connected successfully");
@@ -38,6 +65,7 @@ connectDB()
     console.log("server is listening at 7777");
 });
 })
+
 .catch((err)=>{
     console.log("database connection failed");
 });
