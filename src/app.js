@@ -1,24 +1,29 @@
 const express=require("express");
 const app=express();
+const connectDB=require("./config/database");
+const User=require("./models/user");
 
-app.get("/user",(req,res)=>{
-try{
-   throw new Error("sjknj");
-   res.send("error occured");
-}
-catch(err){
-    res.status(404).send("error occured");
-}
-});
-app.use("/",(err,req,res,next)=>{
-    if(err){
-    res.status(404).send("something went wrong");
+app.use(express.json());
+app.post("/signup", async(req,res)=>{
+    const user=new User(req.body);
+    try{
+      await user.save();
+      res.send("user added successfully!");
     }
+    catch(err){
+      res.status(400).send("error occured while saving"+err.message);
+    }
+});
+
+connectDB()
+.then(()=>{
+  console.log("database connected successfully");
+  app.listen(7777,()=>{
+    console.log("server is listening at 7777");
+});
 })
+.catch((err)=>{
+    console.log("database connection failed");
+});
 
 
-
-app.listen(535,()=>{
-    console.log("server is listening at 535");
-}
-);
