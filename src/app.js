@@ -49,7 +49,7 @@ app.patch("/user/:userId",async(req,res)=>{
   const data = req.body;
   try{
       
-   const availableUpdates=["age","about","photourl","skills","gender"];
+   const availableUpdates=["age","about","photoUrl","skills","gender"];
    const isUpdate=Object.keys(data).every((k)=>
     availableUpdates.includes(k)
    );
