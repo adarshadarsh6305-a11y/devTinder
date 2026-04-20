@@ -6,26 +6,11 @@ const bcrypt=require('bcrypt');
 const {validateSignUp}=require("./utils/validation");
 const cookieParser=require("cookie-parser");
 const jwt=require("jsonwebtoken");
-
+const {userAuth}=require("./middleware/auth");
 
 app.use(express.json());
 app.use(cookieParser());
 
-app.get("/user", async(req,res)=>{
-   const userEmail=req.body.emailId;
-    try{
-      const users=await User.findOne({emailId:userEmail});
-      if(users.length===0){
-        res.status(404).send("user not found");
-      }
-      else{
-      res.send(users);
-      }
-    }
-    catch(err){
-      res.status(400).send("something went wrong");
-    }
-});
 
 app.post("/signup", async(req,res)=>{
       try{
@@ -71,59 +56,29 @@ try{
     }
 });
 
-app.get("/profile",async(req,res)=>{
+app.get("/profile",userAuth,async(req,res)=>{
   try{
-  const cookies=req.cookies;
-  const {token}=cookies;
-  const decodedmesg=await jwt.verify(token,"devTinder@123");
-  const {_id}=decodedmesg;
-  const userinfo=await User.findById({_id:_id});
+  userinfo=req.user;
   res.send(userinfo);
-  console.log(token);
   }
   catch(err){
       res.status(400).send("ERROR:" + err.message);
     }
-
 });
 
 
-app.delete("/user",async(req,res)=>{
-  const userId=req.body.userId;
-
+app.post("/sendrequest",userAuth,async(req,res)=>{
   try{
-  await User.findByIdAndDelete(userId);
-  res.send("user deleted successfully");
+  const userinfo=req.user;
+  const lastName=userinfo;
+  res.send(lastName +" is sent you a request!");
   }
   catch(err){
-    res.status(404).send("something went wrong");
-  }
-
+      res.status(400).send("ERROR:" + err.message);
+    }
 });
 
-app.patch("/user/:userId",async(req,res)=>{
-  const userId=req.params?.userId;
-  const data = req.body;
-  try{
 
-   const availableUpdates=["age","about","photoUrl","skills","gender"];
-   const isUpdate=Object.keys(data).every((k)=>
-    availableUpdates.includes(k)
-   );
-   if(!isUpdate){
-    throw new Error("cant able to update the user");
-   }
-   if(data?.skills.length>10){
-    throw new Error("skills cannot be more than 10");
-   }
-  const user=await User.findByIdAndUpdate({_id:userId},data,{returnDocument:"after",runValidators:true});
-  res.send("user updated successfully");
-  }
-  catch(err){
-    res.status(404).send("unable to update the user");
-  }
-
-});
 
 connectDB()
 .then(()=>{
