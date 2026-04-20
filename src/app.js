@@ -4,8 +4,13 @@ const connectDB=require("./config/database");
 const User=require("./models/user");
 const bcrypt=require('bcrypt');
 const {validateSignUp}=require("./utils/validation");
+const cookieParser=require("cookie-parser");
+const jwt=require("jsonwebtoken");
+
 
 app.use(express.json());
+app.use(cookieParser());
+
 app.get("/user", async(req,res)=>{
    const userEmail=req.body.emailId;
     try{
@@ -52,17 +57,36 @@ try{
     throw new Error("invalid credentials");
   }
   const isPassword = await bcrypt.compare(password,user.password);
-  if(!isPassword){
-    throw new Error("invalid vredentials");
+  if(isPassword){
+    const cookie=await jwt.sign({_id:user._id},"devTinder@123");
+    res.cookie("token",cookie);
+    res.send("login successful");
   }
   else{
-    res.send("login successful");
+    throw new Error("invalid credentials");
   }
 }
  catch(err){
       res.status(400).send("ERROR:" + err.message);
     }
 });
+
+app.get("/profile",async(req,res)=>{
+  try{
+  const cookies=req.cookies;
+  const {token}=cookies;
+  const decodedmesg=await jwt.verify(token,"devTinder@123");
+  const {_id}=decodedmesg;
+  const userinfo=await User.findById({_id:_id});
+  res.send(userinfo);
+  console.log(token);
+  }
+  catch(err){
+      res.status(400).send("ERROR:" + err.message);
+    }
+
+});
+
 
 app.delete("/user",async(req,res)=>{
   const userId=req.body.userId;
