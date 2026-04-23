@@ -51,4 +51,12 @@ try{
     }
 });
 
+authRouter.post("/logout",async (req,res)=>{
+  res.cookie("token",null,
+    {expires:new Date(Date.now())}
+  );
+  res.send("log out successfull");
+    
+});
+
 module.exports={authRouter};
