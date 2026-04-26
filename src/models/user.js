@@ -103,8 +103,5 @@ userSchema.methods.validatePassword= async function(passwordByUser){
     const passwordHash=user.password;
     const isValidPassword=await bcrypt.compare(passwordByUser,passwordHash);
     return isValidPassword;
-
 }
-
-
 module.exports=mongoose.model("User",userSchema);

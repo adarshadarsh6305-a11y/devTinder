@@ -3,6 +3,9 @@ const profileRouter=express.Router();
 const {userAuth}=require("../middleware/auth");
 const {ValidateProfileData}=require("../utils/validation");
 const user = require("../models/user");
+const validator =require("validator");
+const bcrypt=require('bcrypt');
+
 
 
 profileRouter.get("/profile/view",userAuth,async(req,res)=>{
@@ -29,6 +32,29 @@ profileRouter.patch("/profile/edit",userAuth,async(req,res)=>{
   catch(err){
       res.status(400).send("ERROR:" + err.message);
     }
+});
+profileRouter.patch("/profile/changePassword",userAuth,async(req,res)=>{
+  try{
+     const user=req.user;
+     const {password}=req.body;
+       const isPassword = await user.validatePassword(password);
+       if(!isPassword){
+        throw new Error("current password is incorrect!");
+       }
+       const {newPassword}=req.body;
+       if(!validator.isStrongPassword(newPassword)){
+               throw new Error("please enter strong password");
+           }
+       const passwordHash=await bcrypt.hash(newPassword,10);
+       user[password]=passwordHash;
+        await user.save(); 
+       res.send("password changed successfully!");
+      
+          }
+           catch(err){
+      res.status(400).send("ERROR:" + err.message);
+    }
+
 });
 
 
