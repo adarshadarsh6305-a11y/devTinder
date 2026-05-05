@@ -7,6 +7,7 @@ const bcrypt=require('bcrypt');
 
 
 
+
 authRouter.post("/signup", async(req,res)=>{
       try{
         validateSignUp(req);

@@ -37,7 +37,7 @@ requestRouter.post("/request/send/:status/:toUserId",userAuth,async(req,res)=>{
   const data=await newRequest.save();
   res.status(201).json({
   success: true,
-  message: "Connection request sent successfully",
+  message: fromUser.firstName +" interested "+"in " +toUser.firstName,
   data: data
  
 });
@@ -68,7 +68,7 @@ requestRouter.post("/request/review/:status/:requestId",userAuth,async(req,res)=
 
          requestExist.status=status;
          const data=await requestExist.save();
-         res.json({message:"successfully "+status +" connection request",data});
+         res.json({message: user.firstName+" "+status +" connection request",data});
 
     }
      catch(err){

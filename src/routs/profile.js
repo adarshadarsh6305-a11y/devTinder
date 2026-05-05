@@ -36,17 +36,20 @@ profileRouter.patch("/profile/edit",userAuth,async(req,res)=>{
 profileRouter.patch("/profile/changePassword",userAuth,async(req,res)=>{
   try{
      const user=req.user;
-     const {password}=req.body;
+     const {password,newPassword}=req.body;
+
+     if (password === newPassword) {
+   throw new Error("new password cannot be same as old password");
+}
        const isPassword = await user.validatePassword(password);
        if(!isPassword){
         throw new Error("current password is incorrect!");
        }
-       const {newPassword}=req.body;
        if(!validator.isStrongPassword(newPassword)){
                throw new Error("please enter strong password");
            }
        const passwordHash=await bcrypt.hash(newPassword,10);
-       user[password]=passwordHash;
+       user.password=passwordHash;
         await user.save(); 
        res.send("password changed successfully!");
       
