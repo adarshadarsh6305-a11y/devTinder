@@ -5,9 +5,9 @@ const {ConnectionRequest}=require("../models/connectionRequest");
 const User=require("../models/user");
 
 
-const userSafeData=["firstName","lastName","age","gender","skills","photoUrl"];
+const userSafeData=["firstName","lastName","age","gender","skills","photoUrl","about"];
 
-userRouter.get("/user/request/received",userAuth,async(req,res)=>{
+userRouter.get("/user/requests/received",userAuth,async(req,res)=>{
    try{
       const user=req.user;
       const requests=await ConnectionRequest.find({
@@ -17,32 +17,52 @@ userRouter.get("/user/request/received",userAuth,async(req,res)=>{
       if(!requests){
         return res.status(404).json({meassage:"there are no requests"});
       }
-      res.json({message:"see your all requests below",requests});
+      res.json({message:"see your all requests below",data:requests});
    }
      catch(err){
       res.status(400).send("ERROR:" + err.message);
     }
 });
 
-userRouter.get("/user/connections",userAuth,async(req,res)=>{
-  try{
-    const user=req.user;
-    const connectionRequests=await ConnectionRequest.find({
-      $or:[{fromUserId:user._id,status:"accepted"},
-        {toUserId:user._id,status:"accepted"}]
-    }).populate("fromUserId",userSafeData).populate("toUserId",userSafeData);
-    
-    const data=connectionRequests.map((row)=>{
-      if(row.fromUserId._id.toString()===user._id.toString()){
+userRouter.get("/user/connections", userAuth, async (req, res) => {
+
+  try {
+
+    const user = req.user;
+
+    const connectionRequests = await ConnectionRequest.find({
+      $or: [
+        { fromUserId: user._id, status: "accepted" },
+        { toUserId: user._id, status: "accepted" }
+      ]
+    })
+    .populate("fromUserId", userSafeData)
+    .populate("toUserId", userSafeData);
+
+    const safeConnections = connectionRequests.filter(
+      (row) => row.fromUserId && row.toUserId
+    );
+
+    const data = safeConnections.map((row) => {
+
+      if(row.fromUserId._id.toString() === user._id.toString()){
+
         return row.toUserId;
+
       }
+
       return row.fromUserId;
+
     });
-    res.json({data:data});
+
+    res.json({ data });
 
   }
+
   catch(err){
-    res.status(400).send("ERROR:" + err.message);
+
+    res.status(400).send("ERROR: " + err.message);
+
   }
 
 });
@@ -77,5 +97,4 @@ userRouter.get("/feed",userAuth,async(req,res)=>{
   }
 
 });
-
 module.exports={userRouter};

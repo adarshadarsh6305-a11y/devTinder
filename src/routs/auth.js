@@ -20,9 +20,11 @@ authRouter.post("/signup", async(req,res)=>{
       emailId,
       password:passwordHash,
     });
+        const token=await user.getJwt();
+    res.cookie("token",token,{expires:new Date(Date.now()+8*3600000)});
 
-      await user.save();
-      res.send("user added successfully!");
+      const signedUser=await user.save();
+      res.json({message:"user signed successfully",data:signedUser});
     }
     catch(err){
       res.status(400).send("ERROR:" + err.message);
@@ -41,7 +43,7 @@ try{
   if(isPassword){
     const token=await user.getJwt();
     res.cookie("token",token,{expires:new Date(Date.now()+8*3600000)});
-    res.send("login successful");
+    res.send(user);
   }
   else{
     throw new Error("invalid credentials");

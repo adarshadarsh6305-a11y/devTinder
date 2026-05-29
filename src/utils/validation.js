@@ -14,7 +14,7 @@ const validateSignUp=(req)=>{
 };
 
 const ValidateProfileData=(req)=>{
-    const validData=["firstName","lastName","age","about","skills","gender","photUrl"];
+    const validData=["firstName","lastName","age","about","skills","gender","photoUrl"];
     const isValidProfileData=Object.keys(req.body).every((field)=>validData.includes(field));
     return isValidProfileData;
 }

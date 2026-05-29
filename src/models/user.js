@@ -51,27 +51,32 @@ const userSchema=new mongoose.Schema({
         }
     },
     },
-    age:{
-        type:Number,
-        // min:18,
-        // max:120,
-         validate(value){
-        if(value.length<18 || value.length>120){
-            throw new error("invalid age");
-        }
+age:{
+    type:Number,
+
+   validate(value){
+
+    if(value == null || value === "") return true;
+
+    if(value < 18 || value > 120){
+        throw new Error("Invalid age");
     }
-    },
+},
+},
     gender:{
         type:String,
         validate(value){
-        if(!["male","female","others"].includes(value)){
-            throw new Error("gender is not valid");
-        }
+
+    if(value == null || value === "") return true;
+
+    if(value < 18 || value > 120){
+        throw new Error("Invalid age");
     }
+},
     },
     photoUrl:{
       type:String,
-      default:"https://www.google.com/url?sa=i&url=https%3A%2F%2Fdepositphotos.com%2Fvectors%2Fdefault-avatar.html&psig=AOvVaw0lAUgeIz2UWYKJ9eC2Dnbm&ust=1772954687790000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCNjQuZShjZMDFQAAAAAdAAAAABAK",
+      default:"https://www.shutterstock.com/image-photo/silhouette-young-man-avatar-blue-260nw-2549867317.jpg",
       validate(value){
         if(!validator.isURL(value)){
             throw new Error("invalid url");

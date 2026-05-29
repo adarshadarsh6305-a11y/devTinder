@@ -18,20 +18,37 @@ profileRouter.get("/profile/view",userAuth,async(req,res)=>{
     }
 });
 
-profileRouter.patch("/profile/edit",userAuth,async(req,res)=>{
-   try{
-      const isValidProfileData=ValidateProfileData(req);
-      if(!isValidProfileData){
-        throw new Error("Edit data is invalid!!");
-      }
-      const user=req.user;
-      Object.keys(req.body).every((key)=>user[key]=req.body[key]);
-      res.send(user.lastName + ", Your profile edited successfully!!" );
-       await user.save();
-  }
-  catch(err){
-      res.status(400).send("ERROR:" + err.message);
+profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
+
+  try {
+
+    const isValidProfileData = ValidateProfileData(req);
+
+    if (!isValidProfileData) {
+      throw new Error("Edit data is invalid!!");
     }
+
+    const user = req.user;
+
+    Object.keys(req.body).forEach((key) => {
+      user[key] = req.body[key];
+    });
+
+    await user.save();
+
+    res.send({
+      message: "Profile updated successfully",
+      data: user
+    });
+
+  }
+
+  catch (err) {
+
+    res.status(400).send("ERROR: " + err.message);
+
+  }
+
 });
 profileRouter.patch("/profile/changePassword",userAuth,async(req,res)=>{
   try{
@@ -52,7 +69,6 @@ profileRouter.patch("/profile/changePassword",userAuth,async(req,res)=>{
        user.password=passwordHash;
         await user.save(); 
        res.send("password changed successfully!");
-      
           }
            catch(err){
       res.status(400).send("ERROR:" + err.message);
