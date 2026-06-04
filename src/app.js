@@ -4,6 +4,8 @@ const connectDB=require("./config/database");
 const User=require("./models/user");
 const cookieParser=require("cookie-parser");
 
+require('dotenv').config();
+
 const {authRouter}=require("./routs/auth");
 const {profileRouter}=require("./routs/profile");
 const {requestRouter}=require("./routs/request");
@@ -11,7 +13,7 @@ const {userRouter}=require("./routs/user");
 const cors = require('cors');
 
 app.use(cors({
-  origin:"http://localhost:5173",
+  origin:process.env.Front_End_Location,
   credentials:true
 }));
 app.use(express.json());

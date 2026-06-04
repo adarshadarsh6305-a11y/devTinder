@@ -2,7 +2,6 @@ const mongoose=require('mongoose');
 
 const connectDB=async()=>{
     await mongoose.connect(
-        "mongodb+srv://adarshadarsh6305_db_user:adarshadarsh630@project1.hwcckxv.mongodb.net/devTinder"
-    );
+process.env.Mongo_Db_Url    );
 };
 module.exports=connectDB;

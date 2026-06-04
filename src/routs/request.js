@@ -3,6 +3,8 @@ const requestRouter=express.Router();
 const {userAuth}=require("../middleware/auth");
 const User=require("../models/user");
 const {ConnectionRequest}=require("../models/connectionRequest");
+const sendEmail=require("../utils/sendEmail");
+
 
 
 requestRouter.post("/request/send/:status/:toUserId",userAuth,async(req,res)=>{
@@ -35,6 +37,16 @@ requestRouter.post("/request/send/:status/:toUserId",userAuth,async(req,res)=>{
     status
   });
   const data=await newRequest.save();
+
+const emailRes = await sendEmail.run(
+  `New Connection Request on DevTinder`,
+  `Hi ${toUser.firstName},
+
+${fromUser.firstName} is interested in connecting with you on DevTinder.
+
+Login to your account to review the request.`
+);
+
   res.status(201).json({
   success: true,
   message: fromUser.firstName +" interested "+"in " +toUser.firstName,
@@ -43,8 +55,10 @@ requestRouter.post("/request/send/:status/:toUserId",userAuth,async(req,res)=>{
 });
   }
   catch(err){
-      res.status(400).send("ERROR:" + err.message);
-    }
+   console.log("FULL ERROR:");
+   console.log(err);
+   res.status(400).send("ERROR:" + err.message);
+}
 });
 
 requestRouter.post("/request/review/:status/:requestId",userAuth,async(req,res)=>{

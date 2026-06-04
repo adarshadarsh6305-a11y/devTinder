@@ -98,7 +98,7 @@ age:{
 
 userSchema.methods.getJwt=async function(){
    const user=this;
-    const token=await jwt.sign({_id:user._id},"devTinder@123",{expiresIn:"7d"});
+    const token=await jwt.sign({_id:user._id},process.env.Jwt_Password,{expiresIn:"7d"});
     return token;
 
 }
