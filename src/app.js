@@ -5,6 +5,7 @@ const User=require("./models/user");
 const cookieParser=require("cookie-parser");
 
 require('dotenv').config();
+require("./utils/cron");
 
 const {authRouter}=require("./routs/auth");
 const {profileRouter}=require("./routs/profile");
