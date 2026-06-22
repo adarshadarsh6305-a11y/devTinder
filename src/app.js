@@ -3,6 +3,9 @@ const app=express();
 const connectDB=require("./config/database");
 const User=require("./models/user");
 const cookieParser=require("cookie-parser");
+const {socketHandle}=require("./utils/socketHandle");
+
+const http=require("http");
 
 require('dotenv').config();
 require("./utils/cron");
@@ -29,10 +32,14 @@ app.use("/",requestRouter);
 app.use("/",userRouter);
 app.use("/",paymentRouter);
 
+
+const server = http.createServer(app);
+socketHandle(server);
+
 connectDB()
 .then(()=>{
   console.log("database connected successfully");
-  app.listen(7777,()=>{
+  server.listen(7777,()=>{
     console.log("server is listening at 7777");
 });
 })

@@ -42,7 +42,9 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
     const safeConnections = connectionRequests.filter(
       (row) => row.fromUserId && row.toUserId
     );
+  
 
+ 
     const data = safeConnections.map((row) => {
 
       if(row.fromUserId._id.toString() === user._id.toString()){
@@ -54,7 +56,7 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
       return row.fromUserId;
 
     });
-
+   
     res.json({ data });
 
   }
