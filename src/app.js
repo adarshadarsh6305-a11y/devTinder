@@ -15,8 +15,10 @@ const {profileRouter}=require("./routs/profile");
 const {requestRouter}=require("./routs/request");
 const {userRouter}=require("./routs/user");
 const {paymentRouter}=require("./routs/payments");
+const { chatRouter } = require("./routs/chat");
 
 const cors = require('cors');
+
 
 app.use(cors({
   origin:process.env.Front_End_Location,
@@ -31,6 +33,7 @@ app.use("/",profileRouter);
 app.use("/",requestRouter);
 app.use("/",userRouter);
 app.use("/",paymentRouter);
+app.use("/",chatRouter);
 
 
 const server = http.createServer(app);
