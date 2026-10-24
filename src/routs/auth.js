@@ -21,7 +21,12 @@ authRouter.post("/signup", async(req,res)=>{
       password:passwordHash,
     });
         const token=await user.getJwt();
-    res.cookie("token",token,{expires:new Date(Date.now()+8*3600000)});
+   res.cookie("token", token, {
+  expires: new Date(Date.now() + 8 * 3600000),
+  httpOnly: true,
+  secure: true,
+  sameSite: "none"
+});
 
       const signedUser=await user.save();
       res.json({message:"user signed successfully",data:signedUser});
@@ -42,7 +47,12 @@ try{
   const isPassword = await user.validatePassword(password);
   if(isPassword){
     const token=await user.getJwt();
-    res.cookie("token",token,{expires:new Date(Date.now()+8*3600000)});
+    res.cookie("token", token, {
+  expires: new Date(Date.now() + 8 * 3600000),
+  httpOnly: true,
+  secure: true,
+  sameSite: "none"
+});
     res.send(user);
   }
   else{
