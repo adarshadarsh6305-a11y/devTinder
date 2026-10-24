@@ -3,11 +3,12 @@ const {chatMessages}=require("../models/chat");
 const {ConnectionRequest} = require("../models/connectionRequest");
 
 const socketHandle=(server)=>{
-   const io=socket(server,{
-    cors:{
-        origin:process.env.Front_End_Location,
-    },
-   });
+   const io = socket(server, {
+  cors: {
+    origin: process.env.Front_End_Location,
+    credentials: true,
+  },
+});
 
    
 
