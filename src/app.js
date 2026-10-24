@@ -39,16 +39,20 @@ app.use("/",chatRouter);
 const server = http.createServer(app);
 socketHandle(server);
 
-connectDB()
-.then(()=>{
-  console.log("database connected successfully");
-  server.listen(7777,()=>{
-    console.log("server is listening at 7777");
-});
-})
 
-.catch((err)=>{
-    console.log("database connection failed");
-});
+connectDB()
+  .then(() => {
+    console.log("database connected successfully");
+
+    const PORT = process.env.PORT || 7777;
+
+    server.listen(PORT, () => {
+      console.log(`server is listening at ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("database connection failed:", err);
+  });
+
 
 
